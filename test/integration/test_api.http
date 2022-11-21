@@ -1,0 +1,40 @@
+# curl -X POST integration://localhost:8000/similarity -H "Content-Type: application/json" -d '{"type":"Feature"}
+POST http://localhost:8000/similarity
+Content-Type: application/json
+
+{
+  "source": "How do I reset my password?",
+  "candidates": [
+    "I forgot my password, what can I do?",
+    "How can we change our credentials?",
+    "How do I change my username?",
+    "How do I purchase the premium plan?",
+    "My dog ate my homework"
+  ]
+}
+
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200")
+
+        const res = response.body
+        client.assert(res.hasOwnProperty("results"), "Response does not have 'results' key")
+        client.assert(Array.isArray(res.results), "Response 'results' key is not an array")
+
+        res.results.forEach((result) => {
+            client.assert(result.hasOwnProperty("candidate"), "Response 'results' key array does not have 'candidate' key")
+            client.assert(result.hasOwnProperty("score"), "Response 'results' key array does not have 'score' key")
+            client.assert(typeof result.candidate === "string", "Response 'results' key array 'candidate' key is not a string")
+            client.assert(typeof result.score === "number", "Response 'results' key array 'score' key is not a number")
+        })
+
+        // Check that the results are sorted by score
+        const scores = res.results.map((result) => result.score)
+        const sortedScores = scores.slice().sort((a, b) => b - a)
+        client.assert(JSON.stringify(scores) === JSON.stringify(sortedScores), "Response 'results' key array is not sorted by score")
+
+        // First result should be "I forgot my password, what can I do?"
+        client.assert(res.results[0].candidate === "I forgot my password, what can I do?", "Incorrect first result?")
+    })
+%}

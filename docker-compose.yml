@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  sentence-similarity-api:
+    container_name: sentence-similarity-api
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on: [redis]
+    volumes:
+      - model-cache:/root/.cache/torch
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+  redis:
+    image: redis:7
+    container_name: sentence-similarity-cache
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+volumes:
+  model-cache:
+  redis-data:
