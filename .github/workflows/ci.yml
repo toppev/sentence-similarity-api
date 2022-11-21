@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup env
-        run: cp dev.env .env
+        run: cp example.env .env
       - name: Start containers
         run: docker-compose up -d --build
       - uses: actions/setup-node@v2
@@ -22,4 +22,16 @@ jobs:
       - name: Wait for docker
         run: while docker ps | grep -q "unhealthy"; do sleep 1s; done
       - name: Run integration tests
-        run: httpyac --all -o short --repeat 5 --repeat-mode sequential --bail test/integration/**/*.http
+        # run twice to check if the tests are idempotent (e.g., cache)
+        run: |
+          httpyac --all -o short --bail test/integration/**/*.http
+          httpyac --all -o short --bail test/integration/**/*.http
+      - name: Upload docker logs
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-compose.log
+          path: docker-compose.log
+      - name: Stop containers
+        if: always()
+        run: docker-compose down

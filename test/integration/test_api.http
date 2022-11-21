@@ -19,6 +19,9 @@ Content-Type: application/json
         client.assert(response.status === 200, "Response status is not 200")
 
         const res = response.body
+        // debug log body
+
+
         client.assert(res.hasOwnProperty("results"), "Response does not have 'results' key")
         client.assert(Array.isArray(res.results), "Response 'results' key is not an array")
 
