@@ -26,6 +26,9 @@ jobs:
         run: |
           httpyac --all -o short --bail test/integration/**/*.http
           httpyac --all -o short --bail test/integration/**/*.http
+      - name: Print docker logs
+        # just for debugging etc.
+        run: docker-compose logs
       - name: Export docker logs
         if: failure()
         run: docker-compose -f "prod.docker-compose.yml" logs --no-color > docker-compose.log

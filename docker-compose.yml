@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - WEB_CONCURRENCY=${WEB_CONCURRENCY}
     env_file:
       - .env
     ports:
