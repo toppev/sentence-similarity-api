@@ -20,7 +20,7 @@ jobs:
       - name: Install test dependencies
         run: npm install -g httpyac
       - name: Wait for docker
-        run: while docker ps | grep -q "unhealthy"; do sleep 1s; done
+        run: while docker ps | grep -E -q "unhealthy|starting"; do sleep 1s; done
       - name: Run integration tests
         # run twice to check if the tests are idempotent (e.g., cache)
         run: |
