@@ -22,17 +22,19 @@ info:
   version: 1.0.0
 paths:
   /similarity:
+    description: |-
+      Get the semantic similarity of one sentence against up to 100 other sentences in one request.
     post:
-      summary: "Get similarities between sentences"
-      description: "Get the semantic similarity between the source sentence and the candidate sentences"
+      summary: "Compare semantic meaning of texts"
       requestBody:
+        description: "The source text and the texts to compare against"
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SimilaritiesRequestBody'
       responses:
         '200':
-          description: "Successful operation"
+          description: "The semantic similarity of the source text against all the other texts sorted by similarity"
           content:
             application/json:
               schema:
@@ -47,11 +49,14 @@ components:
       properties:
         source:
           type: "string"
+          required: true
           maxLength: 512
           description: "The text which is compared against the candidate texts for similar meaning"
         candidates:
           description: 'The candidate texts (usually the "database" of other known texts or the "haystack")'
           type: "array"
+          required: true
+          minItems: 0
           maxItems: 100
           items:
             type: "string"
