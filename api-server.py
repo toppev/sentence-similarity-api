@@ -1,3 +1,5 @@
+import os
+
 from asgiref.wsgi import WsgiToAsgi
 from flask import Flask, request, Response
 import logging
@@ -13,6 +15,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 logging.basicConfig(level=logging.INFO)
 redis = async_redis.Redis(host='redis', port=6379)
 app = Flask(__name__)
+
+rapid_proxy_secret = os.environ.get('RAPID_API_PROXY_SECRET', None)
+app.logger.info('RAPID_API_PROXY_SECRET exists: %s', rapid_proxy_secret is not None)
 
 app.logger.info('Loading model(s)...')
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L12-v2')  # scores: 68.70	50.82	59.76
@@ -66,6 +71,10 @@ def predict_lang(sample):
 
 @app.route('/similarity', methods=["POST"])
 async def similarity():
+    rapid_key = request.headers.get('X-RapidAPI-Proxy-Secret')
+    if rapid_proxy_secret and rapid_key != rapid_proxy_secret:
+        return Response(status=403, response='Forbidden - Invalid X-RapidAPI-Proxy-Secret')
+
     source = request.json.get('source')
     candidates = request.json.get('candidates')
 
