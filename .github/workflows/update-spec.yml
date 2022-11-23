@@ -24,7 +24,6 @@ jobs:
               --header 'X-RapidAPI-Key: ${{ secrets.RAPIDAPI_KEY }}' \
               --header 'content-type: multipart/form-data' \
               --form file=@spec/openapi.yaml \
-              --fail-with-body
           )
           if [ "$STATUSCODE" -ne 200 ]; then
               echo "Error: $STATUSCODE"
