@@ -87,7 +87,7 @@ async def similarity():
     return dict({
         'results': results,
         'meta': {
-            'lang_id': lang_id,
+            'lang': lang_id,
         }
     })
 

@@ -1,0 +1,23 @@
+name: Update spec
+
+on:
+  push:
+    paths:
+      - 'spec/*'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  update-spec:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update OpenAPI spec to RapidAPI
+        run: |
+          curl --request PUT \
+            --url https://openapi-provisioning.p.rapidapi.com/v1/apis/${{ secrets.RAPIDAPI_API_ID }} \
+            --header 'X-RapidAPI-Host: openapi-provisioning.p.rapidapi.com' \
+            --header 'X-RapidAPI-Key: ${{ secrets.RAPIDAPI_KEY }}' \
+            --header 'content-type: multipart/form-data' \
+            --form file=@spec/openapi.yaml

@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: Multilingual Sentence Similarity API
+  description: |-
+    Use state-of-the-art natural language processing to compare semantic meaning of texts.
+    You can get the similarity of one sentence against up to 100 other sentences in one request.
+    
+    Example use cases:
+    - Find similar articles
+    - Find frequently asked questions (compare message to a list of your FAQs)
+    - Detect duplicate texts that have the same meaning (e.g., duplicate To-Dos, duplicate support requests)
+    - and dozens of other use cases
+    
+    
+    Supported languages:  
+      Albanian, Arabic, Armenian, Bulgarian, Burmese, Catalan; Valencian, Chinese (PRC), Chinese (Taiwan), Croatian, Czech, Danish, Dutch, Estonian, Finnish, French, French (Canada), Galician, Georgian, German, Greek, Gujarati, Hebrew (modern), Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Kurdish, Latvian, Lithuanian, Macedonian, Malay, Marathi (Marāṭhī), Modern, Moldavian, Moldovan, Mongolian, Norwegian Bokmål, Persian, Polish, Portuguese (PT), Portuguese (Brazil), Romanian, Russian, Serbian, Slovak, Slovene, Spanish; Castilian, Swedish, Thai, Turkish, Ukrainian, Urdu and Vietnamese
+    
+    English works the best. Comparing texts from different languages (e.g., German and English sentences) may work but is not guaranteed. Other languages may also work to some degree.
+  # termsOfService:
+  # contact:
+  #   email:
+  version: 1.0.0
+paths:
+  /similarity:
+    post:
+      summary: "Get similarities between sentences"
+      description: "Get the semantic similarity between the source sentence and the candidate sentences"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimilaritiesRequestBody'
+      responses:
+        '200':
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimilaritiesResponseBody'
+        '400':
+          description: "Invalid input"
+
+components:
+  schemas:
+    SimilaritiesRequestBody:
+      type: "object"
+      properties:
+        source:
+          type: "string"
+          maxLength: 512
+          description: "The text which is compared against the candidate texts for similar meaning"
+          example: "How do I reset my password?"
+        candidates:
+          description: 'The candidate texts (usually the "database" of other known texts or the "haystack")'
+          type: "array"
+          maxItems: 100
+          items:
+            type: "string"
+            maxLength: 512
+          example: [
+            "I forgot my password, what can I do?",
+            "How can we change our credentials?",
+            "How do I change my username?",
+            "How do I purchase the premium plan?",
+            "My dog ate my homework"
+          ]
+    SimilaritiesResponseBody:
+      type: "object"
+      properties:
+        meta:
+          type: "object"
+          properties:
+            lang:
+              type: "string"
+              example: 'en'
+        results:
+          type: "array"
+          example: {
+            "results": [
+              {
+                "candidate": "I forgot my password, what can I do?",
+                "score": 0.837
+              },
+              {
+                "candidate": "How can we change our credentials?",
+                "score": 0.49
+              },
+              {
+                "candidate": "How do I change my username?",
+                "score": 0.459
+              },
+              {
+                "candidate": "How do I purchase the premium plan?",
+                "score": 0.195
+              },
+              {
+                "candidate": "My dog ate my homework",
+                "score": 0.133
+              }
+            ]
+          }
+          items:
+            type: "object"
+            properties:
+              candidate:
+                type: "string"
+                description: "The exact candidate text"
+              score:
+                type: "number"
+                description: "The similarity score between the source text and the candidate text as a number between 0 and 1"
+                example: 0.837
+                format: float
+                minimum: 0
+                maximum: 1
