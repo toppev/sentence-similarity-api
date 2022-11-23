@@ -57,13 +57,12 @@ components:
           items:
             type: "string"
             maxLength: 512
-          example: [
-            "I forgot my password, what can I do?",
-            "How can we change our credentials?",
-            "How do I change my username?",
-            "How do I purchase the premium plan?",
-            "My dog ate my homework"
-          ]
+          example:
+            - "I forgot my password, what can I do?"
+            - "How can we change our credentials?"
+            - "How do I change my username?"
+            - "How do I purchase the premium plan?"
+            - "My dog ate my homework"
     SimilaritiesResponseBody:
       type: "object"
       properties:
@@ -75,30 +74,17 @@ components:
               example: 'en'
         results:
           type: "array"
-          example: {
-            "results": [
-              {
-                "candidate": "I forgot my password, what can I do?",
-                "score": 0.837
-              },
-              {
-                "candidate": "How can we change our credentials?",
-                "score": 0.49
-              },
-              {
-                "candidate": "How do I change my username?",
-                "score": 0.459
-              },
-              {
-                "candidate": "How do I purchase the premium plan?",
-                "score": 0.195
-              },
-              {
-                "candidate": "My dog ate my homework",
-                "score": 0.133
-              }
-            ]
-          }
+          example:
+            - "candidate": "I forgot my password, what can I do?",
+              "score": 0.837
+            - "candidate": "How can we change our credentials?",
+              "score": 0.49
+            - "candidate": "How do I change my username?",
+              "score": 0.459
+            - "candidate": "How do I purchase the premium plan?",
+              "score": 0.195
+            - "candidate": "My dog ate my homework",
+              "score": 0.133
           items:
             type: "object"
             properties:

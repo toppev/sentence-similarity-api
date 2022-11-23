@@ -41,3 +41,13 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker-compose down
+  deploy:
+    # FIXME: temporarily disabled
+    if: github.ref == 'refs/heads/main' && false
+    needs: test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # TODO: add deploy step
