@@ -57,6 +57,7 @@ components:
           items:
             type: "string"
             maxLength: 512
+            example: "I forgot my password, what can I do?"
           example:
             - "I forgot my password, what can I do?"
             - "How can we change our credentials?"
@@ -91,6 +92,7 @@ components:
               candidate:
                 type: "string"
                 description: "The exact candidate text"
+                example: "I forgot my password, what can I do?"
               score:
                 type: "number"
                 description: "The similarity score between the source text and the candidate text as a number between 0 and 1"
