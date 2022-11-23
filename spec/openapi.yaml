@@ -75,15 +75,15 @@ components:
         results:
           type: "array"
           example:
-            - "candidate": "I forgot my password, what can I do?",
+            - "candidate": "I forgot my password, what can I do?"
               "score": 0.837
-            - "candidate": "How can we change our credentials?",
+            - "candidate": "How can we change our credentials?"
               "score": 0.49
-            - "candidate": "How do I change my username?",
+            - "candidate": "How do I change my username?"
               "score": 0.459
-            - "candidate": "How do I purchase the premium plan?",
+            - "candidate": "How do I purchase the premium plan?"
               "score": 0.195
-            - "candidate": "My dog ate my homework",
+            - "candidate": "My dog ate my homework"
               "score": 0.133
           items:
             type: "object"
