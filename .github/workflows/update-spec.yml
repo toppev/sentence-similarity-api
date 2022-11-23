@@ -17,10 +17,16 @@ jobs:
         uses: actions/checkout@v2
       - name: Update OpenAPI spec to RapidAPI
         run: |
-          curl --request PUT \
-            --url https://openapi-provisioning.p.rapidapi.com/v1/apis/${{ secrets.RAPIDAPI_API_ID }} \
-            --header 'X-RapidAPI-Host: openapi-provisioning.p.rapidapi.com' \
-            --header 'X-RapidAPI-Key: ${{ secrets.RAPIDAPI_KEY }}' \
-            --header 'content-type: multipart/form-data' \
-            --form file=@spec/openapi.yaml \
-            --fail-with-body
+          STATUSCODE=$(
+            curl --request PUT \
+              --url https://openapi-provisioning.p.rapidapi.com/v1/apis/${{ secrets.RAPIDAPI_API_ID }} \
+              --header 'X-RapidAPI-Host: openapi-provisioning.p.rapidapi.com' \
+              --header 'X-RapidAPI-Key: ${{ secrets.RAPIDAPI_KEY }}' \
+              --header 'content-type: multipart/form-data' \
+              --form file=@spec/openapi.yaml \
+              --fail-with-body
+          )
+          if [ "$STATUSCODE" -ne 200 ]; then
+              echo "Error: $STATUSCODE"
+              exit 1
+          fi
