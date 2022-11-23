@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'spec/*'
-      - '.github/workflows/ci.yml'
+      - '.github/workflows/update-spec.yml'
 
 jobs:
   update-spec:
