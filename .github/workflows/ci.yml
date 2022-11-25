@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: SSH and update
-        uses: appleboy/ssh-action@v0.1.4
+        uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -56,8 +56,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           command_timeout: 20m
           script: |
-            cd /home/nlp-api/sentence-similarity-api
-            # pull latest changes or clone the repo
+            set -e
+            cd /home/nlp-apis/sentence-similarity-api
             git pull -X theirs https://${{ secrets.GH_TOKEN }}@github.com/toppev/sentence-similarity-api.git || git clone https://${{ secrets.GH_TOKEN }}@github.com/toppev/sentence-similarity-api.git . 
             docker-compose up --build -d
             docker image prune -f
