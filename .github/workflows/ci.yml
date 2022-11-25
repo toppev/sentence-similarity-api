@@ -42,12 +42,22 @@ jobs:
         if: always()
         run: docker-compose down
   deploy:
-    # FIXME: temporarily disabled
-    if: github.ref == 'refs/heads/main' && false
+    if: github.ref == 'refs/heads/main'
     needs: test
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      # TODO: add deploy step
+      - name: SSH and update
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          command_timeout: 20m
+          script: |
+            cd /home/nlp-api/sentence-similarity-api
+            # pull latest changes or clone the repo
+            git pull -X theirs https://${{ secrets.GH_TOKEN }}@github.com/toppev/sentence-similarity-api.git || git clone https://${{ secrets.GH_TOKEN }}@github.com/toppev/sentence-similarity-api.git . 
+            docker-compose up --build -d
+            docker image prune -f
