@@ -1,4 +1,7 @@
 openapi: 3.0.3
+servers:
+  - url: 'https://nlp-api.toppe.dev'
+    description: Production server
 info:
   title: Multilingual Sentence Similarity API
   description: |-
@@ -16,10 +19,8 @@ info:
       Albanian, Arabic, Armenian, Bulgarian, Burmese, Catalan; Valencian, Chinese (PRC), Chinese (Taiwan), Croatian, Czech, Danish, Dutch, Estonian, Finnish, French, French (Canada), Galician, Georgian, German, Greek, Gujarati, Hebrew (modern), Hindi, Hungarian, Indonesian, Italian, Japanese, Korean, Kurdish, Latvian, Lithuanian, Macedonian, Malay, Marathi (Marāṭhī), Modern, Moldavian, Moldovan, Mongolian, Norwegian Bokmål, Persian, Polish, Portuguese (PT), Portuguese (Brazil), Romanian, Russian, Serbian, Slovak, Slovene, Spanish; Castilian, Swedish, Thai, Turkish, Ukrainian, Urdu and Vietnamese
     
     English works the best. Comparing texts from different languages (e.g., German and English sentences) may work but is not guaranteed. Other languages may also work to some degree.
-  # termsOfService:
-  # contact:
-  #   email:
   version: 1.0.0
+
 paths:
   /similarity:
     description: |-
