@@ -2,6 +2,11 @@ name: CI/CD
 
 on:
   push:
+    paths-ignore:
+      - '*.md'
+      - 'LICENSE'
+      - 'spec/**'
+      - '.github/workflows/update-spec.yml'
 
 jobs:
   test:

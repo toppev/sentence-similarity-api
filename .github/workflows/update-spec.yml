@@ -2,8 +2,7 @@ name: Update spec
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - 'spec/*'
       - '.github/workflows/update-spec.yml'
