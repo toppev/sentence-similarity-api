@@ -47,16 +47,15 @@ components:
   schemas:
     SimilaritiesRequestBody:
       type: "object"
+      required: ["source", "candidates"]
       properties:
         source:
           type: "string"
-          required: true
           maxLength: 512
           description: "The text which is compared against the candidate texts for similar meaning"
         candidates:
           description: 'The candidate texts (usually the "database" of other known texts or the "haystack")'
           type: "array"
-          required: true
           minItems: 0
           maxItems: 100
           items:
