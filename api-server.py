@@ -43,13 +43,18 @@ async def get_similarities(source, candidates, lang_id) -> list:
 
 async def encode_with_cache(messages, lang_id) -> list:
     # Either the embeddings or None (len(cached)=len(messages))
-    cached = await redis.mget([f'{lang_id}:{message}' for message in messages])
+    try:
+        cached = await redis.mget([f'{lang_id}:{message}' for message in messages])
+    except Exception as e:
+        app.logger.error(e)
+        cached = [None] * len(messages)
+
     new_embeddings = get_model(lang_id).encode([messages[i] for i in range(len(messages)) if not cached[i]])
 
     embeddings = []
     pipeline = redis.pipeline()
     for i in range(len(messages)):
-        if cached[i]:
+        if cached[i] is not None:
             embeddings.append(np.array(json.loads(cached[i])))
         else:
             embedding = new_embeddings[0]
@@ -57,7 +62,10 @@ async def encode_with_cache(messages, lang_id) -> list:
             new_embeddings = new_embeddings[1:]
             pipeline.set(f'{lang_id}:{messages[i]}', json.dumps(embedding.tolist()), ex=60 * 60 * 12)
 
-    await pipeline.execute()
+    try:
+        await pipeline.execute()
+    except Exception as e:
+        app.logger.error(e)
 
     return embeddings
 
