@@ -1,20 +1,22 @@
 import os
+import time
+import ujson as json
+import logging
 
 from asgiref.wsgi import WsgiToAsgi
 from flask import Flask, request, Response
-import logging
-import ujson as json
-
-import redis.asyncio as async_redis
 
 import numpy as np
 import fasttext
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
+import redis.asyncio as async_redis
+
 logging.basicConfig(level=logging.INFO)
-redis = async_redis.Redis(host='redis', port=6379)
 app = Flask(__name__)
+
+redis = async_redis.Redis(host='redis', port=6379, socket_timeout=2)
 
 rapid_proxy_secret = os.environ.get('RAPID_API_PROXY_SECRET', None)
 app.logger.info('RAPID_API_PROXY_SECRET exists: %s', rapid_proxy_secret is not None)
@@ -71,6 +73,8 @@ def predict_lang(sample):
 
 @app.route('/similarity', methods=["POST"])
 async def similarity():
+    start_time = time.perf_counter()
+
     rapid_key = request.headers.get('X-RapidAPI-Proxy-Secret')
     if rapid_proxy_secret and rapid_key != rapid_proxy_secret:
         return Response(status=403, response='Forbidden - Invalid X-RapidAPI-Proxy-Secret')
@@ -92,6 +96,9 @@ async def similarity():
     (lang_id, prob) = predict_lang(source + candidates[0] if len(candidates) > 0 else source)
     results = await get_similarities(source, candidates, lang_id if prob > 0.75 else None)
     results.sort(key=lambda x: x['score'], reverse=True)
+
+    total_time = time.perf_counter() - start_time
+    app.logger.info(f'Processed %s sentences in %s ms', len(candidates) + 1, round(total_time * 1000, 2))
 
     return dict({
         'results': results,
