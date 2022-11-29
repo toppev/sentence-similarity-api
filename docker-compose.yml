@@ -20,7 +20,7 @@ services:
         max-size: "50m"
         max-file: "5"
   redis:
-    image: redis:7
+    image: redis:7-alpine
     container_name: sentence-similarity-cache
     restart: unless-stopped
     volumes:
