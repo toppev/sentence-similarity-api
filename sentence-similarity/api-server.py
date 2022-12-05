@@ -24,6 +24,7 @@ app.logger.info('RAPID_API_PROXY_SECRET exists: %s', rapid_proxy_secret is not N
 app.logger.info('Loading model(s)...')
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L12-v2')  # scores: 68.70	50.82	59.76
 multilingual_model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')  # scores: 64.25	39.19	51.72
+
 lang_detect = fasttext.load_model('lib/lid.176.ftz')
 app.logger.info('Models loaded')
 
@@ -44,7 +45,8 @@ async def get_similarities(source, candidates, lang_id) -> list:
 async def encode_with_cache(messages, lang_id) -> list:
     # Either the embeddings or None (len(cached)=len(messages))
     try:
-        cached = await redis.mget([f'{lang_id}:{message}' for message in messages])
+        # TODO: append model name in the key? Helps with model changes
+        cached = await redis.mget([f'embeddings:{lang_id}:{message}' for message in messages])
     except Exception as e:
         app.logger.error(e)
         cached = [None] * len(messages)
