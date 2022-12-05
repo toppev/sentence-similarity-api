@@ -8,8 +8,7 @@ from flask import Flask, request, Response
 
 import numpy as np
 import fasttext
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+from sentence_transformers import SentenceTransformer, util
 
 import redis.asyncio as async_redis
 
@@ -73,7 +72,7 @@ async def encode_with_cache(messages, lang_id) -> list:
 
 
 def get_similarity(msg_embeddings, embeddings) -> float:
-    return cosine_similarity(msg_embeddings.reshape(1, -1), np.array(embeddings).reshape(1, -1))[0][0].item()
+    return util.cos_sim(msg_embeddings.reshape(1, -1), np.array(embeddings).reshape(1, -1))[0][0].item()
 
 
 def predict_lang(sample):
