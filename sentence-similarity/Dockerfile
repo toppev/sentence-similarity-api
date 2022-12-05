@@ -3,6 +3,8 @@ FROM python:3.10-slim
 RUN mkdir /app
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y wget
+
 RUN pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu
 RUN wget -P ./lib/ https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz
 
