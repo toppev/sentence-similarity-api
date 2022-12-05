@@ -15,6 +15,7 @@ import redis.asyncio as async_redis
 logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 
+REDIS_NS = 'sentence-similarity'
 redis = async_redis.Redis(host='redis', port=6379, socket_timeout=2)
 
 rapid_proxy_secret = os.environ.get('RAPID_API_PROXY_SECRET', None)
@@ -45,7 +46,7 @@ async def encode_with_cache(messages, lang_id) -> list:
     # Either the embeddings or None (len(cached)=len(messages))
     try:
         # TODO: append model name in the key? Helps with model changes
-        cached = await redis.mget([f'embeddings:{lang_id}:{message}' for message in messages])
+        cached = await redis.mget([f'{REDIS_NS}:embeddings:{lang_id}:{message}' for message in messages])
     except Exception as e:
         app.logger.error(e)
         cached = [None] * len(messages)
