@@ -4,7 +4,7 @@ services:
     container_name: sentence-similarity-api
     restart: unless-stopped
     build:
-      context: .
+      context: sentence-similarity
       dockerfile: Dockerfile
       args:
         - WEB_CONCURRENCY=${WEB_CONCURRENCY}

@@ -29,6 +29,7 @@ jobs:
       - name: Run integration tests
         # run twice to check if the tests are idempotent (e.g., cache)
         run: |
+          cd sentence-similarity
           httpyac --all -o short --bail test/integration/**/*.http
           httpyac --all -o short --bail test/integration/**/*.http
       - name: Print docker logs

@@ -22,4 +22,4 @@ jobs:
             --header 'X-RapidAPI-Host: openapi-provisioning.p.rapidapi.com' \
             --header 'X-RapidAPI-Key: ${{ secrets.RAPIDAPI_KEY }}' \
             --header 'content-type: multipart/form-data' \
-            --form file=@spec/openapi.yaml \
+            --form file=@spec/sentence-similarity-openapi.yaml \
